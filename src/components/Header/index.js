@@ -13,8 +13,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { CartContext } from '../../context/cartContext';
+import { connect } from 'react-redux';
 
-const Header = ({ routes }) => (
+const Header = ({ routes, cart }) => (
   <AppBar position="static">
     <Toolbar>
       <IconButton
@@ -36,21 +37,20 @@ const Header = ({ routes }) => (
             {x.title}
           </Button>
         ))}
-      <CartContext.Consumer>
-        {({ cart }) => (
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <Badge badgeContent={cart.length} color="error">
-              <ShoppingCartIcon />
-            </Badge>
-          </IconButton>
-        )}
-      </CartContext.Consumer>
+      <IconButton
+        size="large"
+        edge="start"
+        color="inherit"
+        aria-label="menu"
+        sx={{ mr: 2 }}
+      >
+        <Badge
+          badgeContent={cart.reduce((p, c) => p + c.quantity, 0)}
+          color="error"
+        >
+          <ShoppingCartIcon />
+        </Badge>
+      </IconButton>
       <IconButton
         size="large"
         edge="start"
@@ -64,4 +64,8 @@ const Header = ({ routes }) => (
   </AppBar>
 );
 
-export default Header;
+const mapStateToProps = (store) => ({
+  cart: store.cart.data,
+});
+
+export default connect(mapStateToProps)(Header);

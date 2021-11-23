@@ -1,12 +1,16 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
+import { Provider } from 'react-redux';
 import App from './App';
-import LocaleProvider, { LocaleContext } from './context/localeContext';
+import store from './configureStore';
+import LocaleProvider from './context/localeContext';
 import './style.css';
 
-ReactDOM.render(
-  <LocaleProvider>
-    <App />
-  </LocaleProvider>,
-  document.getElementById('root')
+render(
+  <Provider store={store}>
+    <LocaleProvider>
+      <App />
+    </LocaleProvider>
+  </Provider>,
+  document.getElementById('root'),
 );
