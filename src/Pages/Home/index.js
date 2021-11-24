@@ -43,15 +43,25 @@ class Home extends Component {
       addToCart,
       updateCart,
       deleteItem,
+      loading,
+      loadProductsError,
+      loadCartError,
     } = this.props;
-    console.log('localeData', localeData);
-    console.log('themeData', themeData);
-    console.log('productsData', productsData);
 
-    const { error, status } = this.state;
+    const { status } = this.state;
 
-    if (error) {
-      return <h1>{error.message}</h1>;
+    if (loading) {
+      return <h1>Loading...</h1>;
+    }
+
+    if (loadProductsError) {
+      return <h1>{loadProductsError.message}</h1>;
+    }
+
+    console.log(loadCartError);
+
+    if (loadCartError) {
+      return <h1>{loadCartError.message}</h1>;
     }
 
     return (
@@ -72,8 +82,8 @@ class Home extends Component {
         >
           Change Locale
         </button>
-        {productsData.data.map((item) => {
-          const cartItem = cartData.data.find((x) => x.id === item.id);
+        {productsData.map((item) => {
+          const cartItem = cartData.find((x) => x.id === item.id);
           return (
             <Card
               key={item.id}
@@ -204,9 +214,12 @@ class Home extends Component {
 
 const mapStateToProps = (store) => ({
   localeData: store.locale,
+  loading: store.loading['load_products'] || store.loading['load_cart'],
   themeData: store.theme,
   productsData: store.products,
   cartData: store.cart,
+  loadProductsError: store.error['load_products'],
+  loadCartError: store.error['load_cart'],
 });
 
 const mapDispatchToProps = (dispatch) => ({

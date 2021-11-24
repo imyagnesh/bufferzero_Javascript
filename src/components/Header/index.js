@@ -65,7 +65,7 @@ const Header = ({ routes, cart }) => (
 );
 
 const mapStateToProps = (store) => ({
-  cart: store.cart.data,
+  cart: store.cart,
 });
 
 export default connect(mapStateToProps)(Header);

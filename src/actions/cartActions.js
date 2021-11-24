@@ -12,7 +12,7 @@ export const loadCartAction = () => async (dispatch) => {
 
 export const addToCartAction = (item) => async (dispatch) => {
   try {
-    dispatch({ type: 'add_cart_request' });
+    dispatch({ type: 'add_cart_request', payload: { id: item.id } });
     const res = await axiosInstance.post('660/cart', {
       ...item,
       quantity: 1,
@@ -25,7 +25,7 @@ export const addToCartAction = (item) => async (dispatch) => {
 
 export const updateCartAction = (item) => async (dispatch) => {
   try {
-    dispatch({ type: 'update_cart_request' });
+    dispatch({ type: 'update_cart_request', payload: { id: item.id } });
     const res = await axiosInstance.put(`660/cart/${item.id}`, item);
     dispatch({ type: 'update_cart_success', payload: res });
   } catch (error) {
@@ -35,7 +35,7 @@ export const updateCartAction = (item) => async (dispatch) => {
 
 export const deleteCartAction = (item) => async (dispatch) => {
   try {
-    dispatch({ type: 'delete_cart_request' });
+    dispatch({ type: 'delete_cart_request', payload: { id: item.id } });
     await axiosInstance.delete(`660/cart/${item.id}`);
     dispatch({ type: 'delete_cart_success', payload: item });
   } catch (error) {
