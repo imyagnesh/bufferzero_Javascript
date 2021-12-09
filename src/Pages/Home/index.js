@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { Box } from '@mui/system';
 import I18n from 'i18n-js';
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -23,194 +23,209 @@ import {
   deleteCartAction,
 } from '../../actions/cartActions';
 
-class Home extends Component {
-  state = {
-    status: [],
-  };
+// class Home extends Component {
+//   state = {
+//     status: [],
+//   };
 
-  async componentDidMount() {
-    const { loadProducts, loadCart } = this.props;
-    loadProducts();
-    loadCart();
-  }
+//   async componentDidMount() {
+//     const { loadProducts, loadCart } = this.props;
+//     loadProducts();
+//     loadCart();
+//   }
 
-  render() {
-    const {
-      localeData,
-      themeData,
-      productsData,
-      cartData,
-      addToCart,
-      updateCart,
-      deleteItem,
-      loading,
-      loadProductsError,
-      loadCartError,
-    } = this.props;
+//   render() {
+//     const {
+//       localeData,
+//       themeData,
+//       productsData,
+//       cartData,
+//       addToCart,
+//       updateCart,
+//       deleteItem,
+//       loading,
+//       loadProductsError,
+//       loadCartError,
+//     } = this.props;
 
-    const { status } = this.state;
+//     const { status } = this.state;
 
-    if (loading) {
-      return <h1>Loading...</h1>;
-    }
+//     if (loading) {
+//       return <h1>Loading...</h1>;
+//     }
 
-    if (loadProductsError) {
-      return <h1>{loadProductsError.message}</h1>;
-    }
+//     if (loadProductsError) {
+//       return <h1>{loadProductsError.message}</h1>;
+//     }
 
-    console.log(loadCartError);
+//     console.log(loadCartError);
 
-    if (loadCartError) {
-      return <h1>{loadCartError.message}</h1>;
-    }
+//     if (loadCartError) {
+//       return <h1>{loadCartError.message}</h1>;
+//     }
 
-    return (
-      <div>
-        <button
-          type="button"
-          onClick={() => {
-            this.props.changeTheme('dark');
-          }}
-        >
-          Change Theme
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            this.props.changeLocale('fr');
-          }}
-        >
-          Change Locale
-        </button>
-        {productsData.map((item) => {
-          const cartItem = cartData.find((x) => x.id === item.id);
-          return (
-            <Card
-              key={item.id}
-              sx={{ display: 'flex', margin: 2, minHeight: 200 }}
-            >
-              <CardMedia
-                component="img"
-                sx={{ width: 151 }}
-                image={item.image}
-                alt={item.title}
-              />
-              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                <CardContent sx={{ flex: '1 0 auto' }}>
-                  <Box
-                    component="div"
-                    overflow="hidden"
-                    whiteSpace="pre-line"
-                    textOverflow="ellipsis"
-                    height={30}
-                  >
-                    <Typography component="div" variant="h5">
-                      {item.title}
-                    </Typography>
-                  </Box>
-                  <Box
-                    component="div"
-                    overflow="hidden"
-                    whiteSpace="pre-line"
-                    textOverflow="ellipsis"
-                    height={60}
-                  >
-                    <Typography
-                      sx={{
-                        overflow: 'hidden',
-                      }}
-                      variant="subtitle1"
-                      color="text.secondary"
-                      component="div"
-                    >
-                      {item.description}
-                    </Typography>
-                  </Box>
-                  <Rating
-                    name="read-only"
-                    value={item.rating.rate}
-                    precision={0.5}
-                    readOnly
-                  />
-                  <Typography
-                    variant="h6"
-                    color="text.secondary"
-                    component="div"
-                  >
-                    {I18n.toCurrency(item.price)}
-                  </Typography>
-                  {cartItem && (
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      {cartItem.quantity <= 1 ? (
-                        <IconButton
-                          size="large"
-                          edge="start"
-                          color="inherit"
-                          aria-label="menu"
-                          sx={{ mr: 2 }}
-                          onClick={() => {
-                            deleteItem(cartItem);
-                          }}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      ) : (
-                        <IconButton
-                          size="large"
-                          edge="start"
-                          color="inherit"
-                          aria-label="menu"
-                          sx={{ mr: 2 }}
-                          onClick={() => {
-                            updateCart({
-                              ...cartItem,
-                              quantity: cartItem.quantity - 1,
-                            });
-                          }}
-                        >
-                          <RemoveIcon />
-                        </IconButton>
-                      )}
-                      <Typography component="div" variant="h5">
-                        {cartItem.quantity}
-                      </Typography>
-                      <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="menu"
-                        sx={{ ml: 2 }}
-                        onClick={() => {
-                          updateCart({
-                            ...cartItem,
-                            quantity: cartItem.quantity + 1,
-                          });
-                        }}
-                      >
-                        <AddIcon />
-                      </IconButton>
-                    </Box>
-                  )}
-                  {!cartItem && (
-                    <Button
-                      disabled={status.some(
-                        (x) => x.id === item.id && x.status === 'Loading',
-                      )}
-                      variant="contained"
-                      onClick={() => addToCart(item)}
-                    >
-                      Add To Cart
-                    </Button>
-                  )}
-                </CardContent>
-              </Box>
-            </Card>
-          );
-        })}
-      </div>
-    );
-  }
-}
+//     return (
+//       <div>
+//         <button
+//           type="button"
+//           onClick={() => {
+//             this.props.changeTheme('dark');
+//           }}
+//         >
+//           Change Theme
+//         </button>
+//         <button
+//           type="button"
+//           onClick={() => {
+//             this.props.changeLocale('fr');
+//           }}
+//         >
+//           Change Locale
+//         </button>
+//         {productsData.map((item) => {
+//           const cartItem = cartData.find((x) => x.id === item.id);
+//           return (
+//             <Card
+//               key={item.id}
+//               sx={{ display: 'flex', margin: 2, minHeight: 200 }}
+//             >
+//               <CardMedia
+//                 component="img"
+//                 sx={{ width: 151 }}
+//                 image={item.image}
+//                 alt={item.title}
+//               />
+//               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+//                 <CardContent sx={{ flex: '1 0 auto' }}>
+//                   <Box
+//                     component="div"
+//                     overflow="hidden"
+//                     whiteSpace="pre-line"
+//                     textOverflow="ellipsis"
+//                     height={30}
+//                   >
+//                     <Typography component="div" variant="h5">
+//                       {item.title}
+//                     </Typography>
+//                   </Box>
+//                   <Box
+//                     component="div"
+//                     overflow="hidden"
+//                     whiteSpace="pre-line"
+//                     textOverflow="ellipsis"
+//                     height={60}
+//                   >
+//                     <Typography
+//                       sx={{
+//                         overflow: 'hidden',
+//                       }}
+//                       variant="subtitle1"
+//                       color="text.secondary"
+//                       component="div"
+//                     >
+//                       {item.description}
+//                     </Typography>
+//                   </Box>
+//                   <Rating
+//                     name="read-only"
+//                     value={item.rating.rate}
+//                     precision={0.5}
+//                     readOnly
+//                   />
+//                   <Typography
+//                     variant="h6"
+//                     color="text.secondary"
+//                     component="div"
+//                   >
+//                     {I18n.toCurrency(item.price)}
+//                   </Typography>
+//                   {cartItem && (
+//                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
+//                       {cartItem.quantity <= 1 ? (
+//                         <IconButton
+//                           size="large"
+//                           edge="start"
+//                           color="inherit"
+//                           aria-label="menu"
+//                           sx={{ mr: 2 }}
+//                           onClick={() => {
+//                             deleteItem(cartItem);
+//                           }}
+//                         >
+//                           <DeleteIcon />
+//                         </IconButton>
+//                       ) : (
+//                         <IconButton
+//                           size="large"
+//                           edge="start"
+//                           color="inherit"
+//                           aria-label="menu"
+//                           sx={{ mr: 2 }}
+//                           onClick={() => {
+//                             updateCart({
+//                               ...cartItem,
+//                               quantity: cartItem.quantity - 1,
+//                             });
+//                           }}
+//                         >
+//                           <RemoveIcon />
+//                         </IconButton>
+//                       )}
+//                       <Typography component="div" variant="h5">
+//                         {cartItem.quantity}
+//                       </Typography>
+//                       <IconButton
+//                         size="large"
+//                         edge="start"
+//                         color="inherit"
+//                         aria-label="menu"
+//                         sx={{ ml: 2 }}
+//                         onClick={() => {
+//                           updateCart({
+//                             ...cartItem,
+//                             quantity: cartItem.quantity + 1,
+//                           });
+//                         }}
+//                       >
+//                         <AddIcon />
+//                       </IconButton>
+//                     </Box>
+//                   )}
+//                   {!cartItem && (
+//                     <Button
+//                       disabled={status.some(
+//                         (x) => x.id === item.id && x.status === 'Loading',
+//                       )}
+//                       variant="contained"
+//                       onClick={() => addToCart(item)}
+//                     >
+//                       Add To Cart
+//                     </Button>
+//                   )}
+//                 </CardContent>
+//               </Box>
+//             </Card>
+//           );
+//         })}
+//       </div>
+//     );
+//   }
+// }
+
+// const Home = ({
+//   localeData,
+//   themeData,
+//   productsData,
+//   cartData,
+//   addToCart,
+//   updateCart,
+//   deleteItem,
+//   loading,
+//   loadProductsError,
+//   loadCartError,
+// }) => {
+//   const [status, setStatus] = useState([]);
+// };
 
 const mapStateToProps = (store) => ({
   localeData: store.locale,
